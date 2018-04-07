@@ -11,6 +11,8 @@ import android.speech.SpeechRecognizer
 import android.util.Log
 import com.santhosh.gonavi.inf.MySpeechRecognitionCallback
 import java.util.*
+import android.app.NotificationManager
+import android.widget.Toast
 
 
 class MySpeechRecognitionManager(private val context: Context,
@@ -25,6 +27,8 @@ class MySpeechRecognitionManager(private val context: Context,
     private var speech: SpeechRecognizer? = null
     private var mode: Int = 100
     private var audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private var notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
     init {
         //recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, Locale.getDefault());
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
@@ -68,10 +72,16 @@ class MySpeechRecognitionManager(private val context: Context,
 
      fun muteRecognition(mute: Boolean) {
          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-             val flag = if (mute) AudioManager.ADJUST_MUTE else AudioManager.ADJUST_UNMUTE
+             if(notificationManager.isNotificationPolicyAccessGranted()){
+                 audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
+             }else{
+                 Log.d("santhosh", "muteRecognition :  Notification Policy Access Denied")
+             }
+             //val flag = if (mute) AudioManager.ADJUST_MUTE else AudioManager.ADJUST_UNMUTE
              //audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, flag, 0)
              //audioManager.adjustStreamVolume(AudioManager.STREAM_SYSTEM, flag, 0)
          } else {
+             audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
              //audioManager.setStreamMute(AudioManager.STREAM_MUSIC, mute);
              //audioManager.setStreamMute(AudioManager.STREAM_SYSTEM, mute);
          }

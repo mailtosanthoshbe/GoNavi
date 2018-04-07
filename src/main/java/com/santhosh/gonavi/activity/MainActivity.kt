@@ -77,7 +77,9 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.activity_main)
 
         //Check and Enable permission(>Android 6.0)
-        checkAndRequestPermissions()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkAndRequestPermissions()
+        }
 
         //inflate map view
         val mapFragment: SupportMapFragment? =
@@ -295,6 +297,7 @@ class MainActivity : AppCompatActivity(),
                 Manifest.permission.CALL_PHONE,
                 Manifest.permission.READ_CONTACTS,
                 Manifest.permission.CAMERA,
+                Manifest.permission.ACCESS_NOTIFICATION_POLICY,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
         val listPermissionsNeeded = mutableListOf<String>()
